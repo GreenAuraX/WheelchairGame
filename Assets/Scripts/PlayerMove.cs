@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using Cinemachine;
+using System.Runtime.InteropServices;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -12,9 +14,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] Rigidbody placePlayerHere;
 
     [Header("Parameters")]
-    [SerializeField] float moveSpeed = 6;
+
+    [SerializeField] float maxSpeed = .15f;
+    [SerializeField] float acceleration = 2f;
+    [SerializeField] float deceleration = 2f;
     [SerializeField] float rotationSpeed = 120;
     [SerializeField] float cameraDistance = 5;
+
+    [SerializeField] Vector3 velocity = Vector3.zero;
 
     [Header("Checks for Rotation")]
     private bool isRotatingToLeft;
@@ -54,22 +61,19 @@ public class PlayerMove : MonoBehaviour
         playerMovement.Player.ZoomOut.performed += ctx => isScrollingDown = true;
         playerMovement.Player.ZoomOut.canceled += ctx => isScrollingDown = false;
 
-
-
     }
 
 
     private void Start()
     {
         placePlayerHere = GetComponent<Rigidbody>();
-        // vCamera = cameraObject.GetComponent<Cinemachine.CinemachineVirtualCamera>()
-            ;
+        // vCamera = cameraObject.GetComponent<Cinemachine.CinemachineVirtualCamera>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 transformForward = transform.forward * moveSpeed * Time.deltaTime;
+        Vector3 transformForward = transform.forward * maxSpeed;
 
         if (isRotatingToLeft && placePlayerHere != null)
         {
@@ -96,9 +100,16 @@ public class PlayerMove : MonoBehaviour
 
         if (isRotatingToLeft && isRotatingToRight)
         {
-            placePlayerHere.MovePosition(placePlayerHere.position + transformForward);
+            velocity = Vector3.MoveTowards(velocity, transformForward, acceleration * Time.deltaTime);
+            placePlayerHere.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
+            // placePlayerHere.MovePosition(placePlayerHere.position + transformForward);
             // placePlayerHere.transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
             // characterController.Move(Vector3.forward * moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * Time.deltaTime);
+            placePlayerHere.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
         }
 
         if (isMovingMouse)
@@ -110,15 +121,28 @@ public class PlayerMove : MonoBehaviour
         {
             // vCamera.m_CameraDistance = 0;
         }
+
+        if (Input.GetKey(KeyCode.R))
+        {
+            ResetScene();
+        }
     }
 
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == 7)
+        if (collision.gameObject.layer == 8)
         {
             Debug.Log("Collision with Wall");
         }
+    }
+
+
+
+    void ResetScene()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentScene);
     }
 
     private void OnEnable()
