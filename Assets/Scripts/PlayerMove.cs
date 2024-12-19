@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using System.Runtime.InteropServices;
+using Unity.Properties;
+using UnityEditor.Experimental.GraphView;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -16,8 +18,11 @@ public class PlayerMove : MonoBehaviour
     [Header("Parameters")]
 
     [SerializeField] float maxSpeed = .15f;
-    [SerializeField] float acceleration = 2f;
-    [SerializeField] float deceleration = 2f;
+    [SerializeField] float reverseSpeed = .6f;
+    [SerializeField] float forwardAcceleration = 2f;
+    [SerializeField] float forwardDeceleration = 2f;
+    [SerializeField] float reverseAcceleration = 2f;
+    [SerializeField] float ReverseDeceleration = 2f;
     [SerializeField] float rotationSpeed = 120;
     [SerializeField] float cameraDistance = 5;
 
@@ -32,6 +37,8 @@ public class PlayerMove : MonoBehaviour
     private bool isScrollingUp;
     private bool isScrollingDown;
 
+    private bool shiftPressed;
+
     // [Header("Camera")]
     // [SerializeField] CinemachineVirtualCamera vCamera;
     // [SerializeField] GameObject cameraObject;
@@ -40,6 +47,7 @@ public class PlayerMove : MonoBehaviour
     [Header("Mouse UI Buttons")]
     [SerializeField] GameObject leftMouseUI;
     [SerializeField] GameObject rightMouseUI;
+    [SerializeField] GameObject shiftUI;
 
 
     private void Awake()
@@ -61,6 +69,9 @@ public class PlayerMove : MonoBehaviour
         playerMovement.Player.ZoomOut.performed += ctx => isScrollingDown = true;
         playerMovement.Player.ZoomOut.canceled += ctx => isScrollingDown = false;
 
+        playerMovement.Player.Shift.performed += ctx => shiftPressed = true;
+        playerMovement.Player.Shift.canceled += ctx => shiftPressed = false;
+
     }
 
 
@@ -74,12 +85,13 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         Vector3 transformForward = transform.forward * maxSpeed;
+        Vector3 transformBackward = -transform.forward * reverseSpeed;
 
         if (isRotatingToLeft && placePlayerHere != null)
         {
             leftMouseUI.SetActive(true);
             float rotationAmount = rotationSpeed * Time.deltaTime;
-            placePlayerHere.transform.Rotate(0, -rotationAmount, 0);
+            placePlayerHere.transform.Rotate(0, rotationAmount, 0);
 
         }
         else
@@ -90,7 +102,7 @@ public class PlayerMove : MonoBehaviour
         if (isRotatingToRight && placePlayerHere != null)
         {
             float rotationAmount = rotationSpeed * Time.deltaTime;
-            placePlayerHere.transform.Rotate(0, rotationAmount, 0);
+            placePlayerHere.transform.Rotate(0, -rotationAmount, 0);
             rightMouseUI.SetActive(true);
         }
         else
@@ -98,17 +110,23 @@ public class PlayerMove : MonoBehaviour
             rightMouseUI.SetActive(false);
         }
 
-        if (isRotatingToLeft && isRotatingToRight)
+        if (isRotatingToLeft && isRotatingToRight && !shiftPressed)
         {
-            velocity = Vector3.MoveTowards(velocity, transformForward, acceleration * Time.deltaTime);
+            velocity = Vector3.MoveTowards(velocity, transformForward, forwardAcceleration * Time.deltaTime);
             placePlayerHere.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
             // placePlayerHere.MovePosition(placePlayerHere.position + transformForward);
             // placePlayerHere.transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
             // characterController.Move(Vector3.forward * moveSpeed * Time.deltaTime);
         }
+        else if (isRotatingToLeft && isRotatingToRight && shiftPressed)
+        {
+            velocity = Vector3.MoveTowards(velocity, transformBackward, reverseAcceleration * Time.deltaTime);
+            placePlayerHere.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
+        }
+
         else
         {
-            velocity = Vector3.MoveTowards(velocity, Vector3.zero, deceleration * Time.deltaTime);
+            velocity = Vector3.MoveTowards(velocity, Vector3.zero, forwardDeceleration * Time.deltaTime);
             placePlayerHere.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
         }
 
@@ -120,6 +138,15 @@ public class PlayerMove : MonoBehaviour
         if (isScrollingUp)
         {
             // vCamera.m_CameraDistance = 0;
+        }
+
+        if (shiftPressed)
+        {
+            shiftUI.SetActive(true);
+        }
+        else
+        {
+            shiftUI.SetActive(false);
         }
 
         if (Input.GetKey(KeyCode.R))
