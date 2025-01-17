@@ -12956,7 +12956,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 464787034}
-  - component: {fileID: 464787037}
   - component: {fileID: 464787040}
   - component: {fileID: 464787039}
   - component: {fileID: 464787038}
@@ -13036,31 +13035,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!114 &464787037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464787033}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e8812d3bf0c44d4faf8513da147a58e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  placePlayerHere: {fileID: 464787036}
-  maxSpeed: 0.56
-  reverseSpeed: 0.22
-  forwardAcceleration: 0.9
-  forwardDeceleration: 1.4
-  reverseAcceleration: 0.48
-  ReverseDeceleration: 6
-  rotationSpeed: 90
-  cameraDistance: 5
-  velocity: {x: 0, y: 0, z: 0}
-  leftMouseUI: {fileID: 423700392}
-  rightMouseUI: {fileID: 788664441}
-  shiftUI: {fileID: 1225394069}
 --- !u!114 &464787038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13076,7 +13050,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
-  raycastDistance: 0.18
+  raycastDistance: 3
   rotationSpeed: 5
 --- !u!114 &464787039
 MonoBehaviour:
