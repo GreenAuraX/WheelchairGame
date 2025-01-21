@@ -29,6 +29,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("Quit Game!");
         Application.Quit();
     }
+    public void ReturnMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+    }
     #endregion
 
     #region ==MainScene==
