@@ -18,6 +18,7 @@ public class DialogueManager : MonoBehaviour
     public GameObject uiElement6;
     public GameObject uiElement7;
     public GameObject uiElement8;
+    public GameObject uiElement9;  
     void Start()
     {
         sentences = new Queue<string>();
@@ -73,6 +74,7 @@ public class DialogueManager : MonoBehaviour
     {
         uiElement7.SetActive(true);
         uiElement8.SetActive(true);
+        uiElement9.SetActive(true);
     }
 }
 
