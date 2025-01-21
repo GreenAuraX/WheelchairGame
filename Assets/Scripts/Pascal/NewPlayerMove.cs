@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using Cinemachine;
 using System.Runtime.InteropServices;
 using Unity.Properties;
-//using UnityEditor.Experimental.GraphView;
+using UnityEditor.Experimental.GraphView;
 using System.Runtime.CompilerServices;
 
 public class NewPlayerMove : MonoBehaviour
@@ -16,10 +16,12 @@ public class NewPlayerMove : MonoBehaviour
     [SerializeField] PlayerMovement playerMovement;
     [SerializeField] Rigidbody rb;
     [SerializeField] GroundCheck ground;
+    [SerializeField] Transform wheelchair;
 
     [Header("Parameters")]
 
-    [SerializeField] float maxSpeed = .15f;
+    
+    [SerializeField] public float maxSpeed = .56f;
     [SerializeField] float forwardAcceleration = 2f;
     [SerializeField] float forwardDeceleration = 2f;
     [SerializeField] float reverseSpeed = .6f;
@@ -40,6 +42,7 @@ public class NewPlayerMove : MonoBehaviour
     private bool isRotatingToLeft;
     private bool isRotatingToRight;
     private bool shiftPressed;
+    bool onSlope;
 
     [Header("Mouse UI Buttons")]
     [SerializeField] GameObject leftMouseUI;
@@ -70,10 +73,12 @@ public class NewPlayerMove : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Vector3 transformForward = transform.forward * maxSpeed;
         Vector3 transformBackward = -transform.forward * reverseSpeed;
+
+
 
         if (isRotatingToLeft && rb != null)
         {
@@ -97,10 +102,46 @@ public class NewPlayerMove : MonoBehaviour
             rightMouseUI.SetActive(false);
         }
 
+
+
         if (isRotatingToLeft && isRotatingToRight && ground.isGrounded && !shiftPressed)
         {
-            velocity = Vector3.MoveTowards(velocity, transformForward, forwardAcceleration * Time.deltaTime);
-            rb.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
+            // Check for the surface normal under the object
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit))
+            {
+                // Get the slope angle
+                float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+
+                float slopeMultiplier = (slopeAngle * 0.01f);
+
+                Debug.Log(slopeAngle);
+
+                if (slopeAngle > 0)
+                {
+                    onSlope = true;
+
+                }
+                else
+                {
+                    onSlope = false;
+                }
+
+                if (onSlope == true)
+                {
+                    if (wheelchair.eulerAngles.x != 0f && wheelchair.eulerAngles.x > 4f)
+                    {
+                        maxSpeed = 0.24f;
+                    }
+                }
+                else
+                {
+                    maxSpeed = 0.56f;
+                }
+
+                velocity = Vector3.MoveTowards(velocity, transformForward, forwardAcceleration * Time.deltaTime);
+                rb.velocity = new Vector3(velocity.x, velocity.y, velocity.z);
+            }
         }
         else if (isRotatingToLeft && isRotatingToRight && ground.isGrounded && shiftPressed)
         {
@@ -126,16 +167,16 @@ public class NewPlayerMove : MonoBehaviour
         {
             ResetScene();
         }
-    }
 
-    void FixedUpdate()
-    {
-        // Ground Check
-        if (!ground.isGrounded)
         {
-            rb.AddForce(Vector3.down * gravityStrength, ForceMode.Acceleration);
+            // Ground Check
+            if (!ground.isGrounded)
+            {
+                rb.AddForce(Vector3.down * gravityStrength, ForceMode.Acceleration);
+            }
         }
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
