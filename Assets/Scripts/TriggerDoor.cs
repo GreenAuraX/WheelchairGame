@@ -6,8 +6,14 @@ using UnityEngine;
 public class TriggerDoor : MonoBehaviour
 {
     [SerializeField] private Animator myDoor = null;
-    public bool canOpen = false;
+    [SerializeField] private bool canOpen = false;
     private bool open = false;
+
+    private void Update()
+    {
+        Debug.Log(canOpen);
+        changeAnimation();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,6 +23,7 @@ public class TriggerDoor : MonoBehaviour
         }
 
     }
+  
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -25,18 +32,21 @@ public class TriggerDoor : MonoBehaviour
         }
 
     }
-
     public void changeAnimation()
     {
-        if (!open && canOpen == true)
+        if (Input.GetKeyDown(KeyCode.E) && canOpen == true)
         {
-            myDoor.Play("DoorOpen", 0, 0.0f);
-            open = true;
-        }
-        else if (open && canOpen == true)
-        {
-            myDoor.Play("DoorClose", 0, 0.0f);
-            open = false;
+
+            if (!open)
+            {
+                myDoor.Play("DoorOpen");
+                open = true;
+            }
+            else if (open)
+            {
+                myDoor.Play("DoorClose");
+                open = false;
+            }
         }
     }
 }
