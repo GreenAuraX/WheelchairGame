@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public class TriggerDoor : MonoBehaviour
+public class doorInteraction : MonoBehaviour
 {
-    [SerializeField] private Animator myDoor = null;
     public bool canOpen = false;
     private bool open = false;
 
@@ -17,13 +16,6 @@ public class TriggerDoor : MonoBehaviour
         }
 
     }
-    private void Update()
-    {
-        if (canOpen && Input.GetKeyDown(KeyCode.E))
-        {
-            changeAnimation();
-        }    
-    }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -33,16 +25,23 @@ public class TriggerDoor : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        if(canOpen)
+            if (Input.GetKeyDown(KeyCode.E))
+                changeAnimation();
+    }
+
     public void changeAnimation()
     {
-        if (!open && canOpen == true)
+        if (!open)
         {
-            myDoor.Play("DoorOpen", 0, 0.0f);
+            this.transform.Rotate(0, -90, 0);
             open = true;
         }
-        else if (open && canOpen == true)
+        else if (open)
         {
-            myDoor.Play("DoorClose", 0, 0.0f);
+            this.transform.Rotate(0, 90, 0);
             open = false;
         }
     }

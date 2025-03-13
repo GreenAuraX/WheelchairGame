@@ -9,7 +9,7 @@ public class movingPlatform : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] int startPoint;
     [SerializeField] Transform[] points;
-
+    public TriggerElevator triggerElevator;
     int i;
     bool reverse;
 
@@ -31,8 +31,11 @@ public class movingPlatform : MonoBehaviour
             {
                 reverse = true;
                 i--;
+                triggerElevator.inUse = false;
+                triggerElevator.changeAnimation();
                 return;
-            } else if (i == 0)
+            } 
+            else if (i == 0)
             {
                 reverse = false;
                 i++;

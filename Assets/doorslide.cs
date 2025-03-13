@@ -28,6 +28,16 @@ public class doorslide : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E) && canOpen)
+        {
+            changeAnimation();
+            Debug.Log("pressed E");
+
+        }
+    }
+
     public void changeAnimation()
     {
         if (!open && canOpen == true)

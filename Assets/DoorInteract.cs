@@ -10,11 +10,12 @@ public class DoorInteract : MonoBehaviour
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        /*if (Input.GetKeyDown(KeyCode.E))
         {
             triggerDoor.changeAnimation();
             triggerElevator.changeAnimation();
             triggerSlidingDoor.changeAnimation();
         }
+       */
     }
 }
