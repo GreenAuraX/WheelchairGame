@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class rotate : MonoBehaviour
 {
-    /*public Transform firstPos;
+   /* public Transform firstPos;
 	public float rotateTime = 3.0f;
 	public float rotateDegrees = 90.0f;
 	private bool rotating = false;
@@ -19,33 +19,35 @@ public class rotate : MonoBehaviour
 		}
 	}
 
-	public IEnumerator Rotate( Transform thisTransform, Transform otherTransform, Vector3 rotateAxis, float degrees, float totalTime)
-	{
-		if (rotating) 
-			yield return null;
-		rotating = true;
-		
-		Debug.Log("miaumiau");
-		var startRotation = thisTransform.rotation;
-		var startPosition = thisTransform.position;
-		transform.RotateAround(otherTransform.position, rotateAxis, degrees);
-		var endRotation = thisTransform.rotation;
-		var endPosition = thisTransform.position;
-		thisTransform.rotation = startRotation;
-		thisTransform.position = startPosition;
+    public IEnumerator Rotate(Transform thisTransform, Transform otherTransform, Vector3 rotateAxis, float degrees, float totalTime)
+    {
+        if (rotating)
+            yield return null;
+        rotating = true;
 
-		var rate = degrees / totalTime;
+        Debug.Log("miaumiau");
+        var startRotation = thisTransform.rotation;
+        var startPosition = thisTransform.position;
+        transform.RotateAround(otherTransform.position, rotateAxis, degrees);
+        var endRotation = thisTransform.rotation;
+        var endPosition = thisTransform.position;
+        thisTransform.rotation = startRotation;
+        thisTransform.position = startPosition;
 
-		for (float i = 0.0f; i < degrees; i += Time.deltaTime * rate) 
-		{
-			yield return null;
-			thisTransform.RotateAround(otherTransform.position, rotateAxis, Time.deltaTime * rate);
-		}
+        var rate = degrees / totalTime;
 
-		thisTransform.rotation = endRotation;
-		thisTransform.position = endPosition;
-		rotating = false;
-	*/
+        for (float i = 0.0f; i < degrees; i += Time.deltaTime * rate)
+        {
+            yield return null;
+            thisTransform.RotateAround(otherTransform.position, rotateAxis, Time.deltaTime * rate);
+        }
+
+        thisTransform.rotation = endRotation;
+        thisTransform.position = endPosition;
+        rotating = false;
+    }
+   */
+	
 
 
     /*
@@ -124,7 +126,7 @@ public class rotate : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E)) // Change 'E' to your preferred key
+        if (Input.GetKeyDown(KeyCode.E)) // 
         {
             ToggleDoor();
         }
